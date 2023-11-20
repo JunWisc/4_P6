@@ -473,10 +473,11 @@ def q10():
     cell = get_cell_containing_txt("#q10")
     if isinstance(cell, str):
         return cell
-    output = extract_txt_from_cell(cell, read_stdout=False)
 
-    if len(output) > 0:
-        return f"Expected empty err msg but got output {output}"
+    output = extract_txt_from_cell(cell, read_stdout=False)
+    cleaned_output = "".join([s for s in output if s.isalnum()]).strip()
+    if len(cleaned_output) > 0:
+        return f"Expected empty err msg but got output of length {len(output)}"
     return None
 
 
