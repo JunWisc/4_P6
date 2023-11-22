@@ -1,0 +1,16 @@
+{
+  "score": 20,
+  "full_score": 100,
+  "tests": {
+    "q1": "PASS (10/10)",
+    "q2": "couldn't find txt madison dane co rgnl ap in output ",
+    "q3": "couldn't find txt -9014250178872933741 in output ",
+    "q4": "Couldn't parse txt  as integer",
+    "q5": "couldn't find txt 356 in output ",
+    "q6": "couldn't find txt stations in output ",
+    "q7": "No dictionary in output ",
+    "q8": "couldn't find txt dn in output ",
+    "q9": "couldn't find txt need 3 replicas, but only have 2 in output ",
+    "q10": "PASS (10/10)"
+  }
+}

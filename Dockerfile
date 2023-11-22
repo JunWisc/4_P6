@@ -15,4 +15,3 @@ ENV PATH="${PATH}:/apache-cassandra-4.1.3/bin:/spark-3.4.1-bin-hadoop3.2/bin"
 
 COPY cassandra.sh /cassandra.sh
 CMD ["sh", "/cassandra.sh"]
-#CMD sh /cassandra.sh && python3 -m jupyterlab --no-browser --ip=0.0.0.0 --port=5000 --allow-root --NotebookApp.token=''
