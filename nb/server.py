@@ -25,9 +25,9 @@ class StationServicer(station_pb2_grpc.StationServicer):
     def StationMax(self, request, context):
         try:
             rows = self.session.execute(self.max_statement, [request.id])
-            return station_pb2.StationMaxReply(max=rows[0][0], error="")
+            return station_pb2.StationMaxReply(tmax=rows[0][0], error="")
         except Exception as e:
-            return station_pb2.StationMaxReply(max=0, error=str(e))
+            return station_pb2.StationMaxReply(tmax=0, error=str(e))
 
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
