@@ -17,18 +17,26 @@ class StationServicer(station_pb2_grpc.StationServicer):
 
     def RecordTemps(self, request, context):
         try:
-            self.session.execute(self.insert_statement, (request.id, request.date, {'tmin': request.tmin, 'tmax': request.tmax}))
+            insert_statement=self.session.execute(self.insert_statement, (request.id, request.date, {'tmin': request.tmin, 'tmax': request.tmax}))
             return station_pb2.RecordTempsReply(error="")
         except Exception as e:
             return station_pb2.RecordTempsReply(error=str(e))
 
+        self.session.execute(insert_statement, (station_id, tmax, tmin))
+        return station_pb2.RecordTempsResponse()
     def StationMax(self, request, context):
         try:
-            rows = self.session.execute(self.max_statement, [request.id])
+            max_statement = self.session.execute(self.max_statement, [request.id])
+            max_statement.consistency_level = ConsistencyLevel.ONE
             return station_pb2.StationMaxReply(tmax=rows[0][0], error="")
         except Exception as e:
             return station_pb2.StationMaxReply(tmax=0, error=str(e))
+        station_id = request.station
 
+
+        max_tmax = max_result[0].max_tmax
+
+        return station_pb2.StationMaxResponse(max_tmax=max_tmax)
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     station_pb2_grpc.add_StationServicer_to_server(StationServicer(), server)
