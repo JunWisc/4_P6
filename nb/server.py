@@ -32,12 +32,12 @@ class StationServicer(station_pb2_grpc.StationServicer):
             return station_pb2.RecordTempsReply(error="")
         except cassandra.Unavailable as ue:
             error_message = f"need {ue.required_replicas} replicas, but only have {ue.alive_replicas}"
-            return station_pb2.RecordTempsResponse(error=error_message)
+            return station_pb2.RecordTempsReply(error=error_message)
         except cassandra.cluster.NoHostAvailable as ne:
             for inner_error in ne.errors.values():
                 if isinstance(inner_error, cassandra.Unavailable):
                     error_message = f"need {inner_error.required_replicas} replicas, but only have {inner_error.alive_replicas}"
-                    return station_pb2.RecordTempsResponse(error=error_message)
+                    return station_pb2.RecordTempsReply(error=error_message)
         except Exception as e:
             return station_pb2.RecordTempsReply(error=str(e))
 
@@ -46,25 +46,24 @@ class StationServicer(station_pb2_grpc.StationServicer):
     def StationMax(self, request, context):
         try:
             respone = self.session.execute(self.max_statement, [request.station])
-            #max_statement.consistency_level = ConsistencyLevel.ONE
             r=respone.one()
             if r:
                 return station_pb2.StationMaxReply(tmax=r[0], error="")
         except cassandra.Unavailable as e:
             error_message = f"need {e.required_replicas} replicas, but only have {e.alive_replicas}"
-            return station_pb2.StationMaxResponse(tmax=0,error=error_message)
+            return station_pb2.StationMaxReply(tmax=0,error=error_message)
         except cassandra.cluster.NoHostAvailable as e:
             for inner_error in e.errors.values():
                 if isinstance(inner_error, cassandra.Unavailable):
                     error_message = f"need {inner_error.required_replicas} replicas, but only have {inner_error.alive_replicas}"
-                    return station_pb2.StationMaxResponse(tmax=0,error=error_message)
+                    return station_pb2.StationMaxReply(tmax=0,error=error_message)
         except Exception as e:
             return station_pb2.StationMaxReply(tmax=0, error=str(e))
 
 
 #        max_tmax = max_result[0].max_tmax
 
- #       return station_pb2.StationMaxResponse(max_tmax=max_tmax)
+ #       return station_pb2.StationMaxReply(max_tmax=max_tmax)
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     station_pb2_grpc.add_StationServicer_to_server(StationServicer(), server)
